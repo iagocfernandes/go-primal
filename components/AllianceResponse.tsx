@@ -1,0 +1,4 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+export default function AllianceResponse({relationshipId,requesterName}:{relationshipId:string;requesterName:string}){const [busy,setBusy]=useState(false);const [msg,setMsg]=useState('');const router=useRouter();async function respond(accept:boolean){setBusy(true);const r=await fetch('/api/game/alliances',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'respond',relationshipId,accept})});const d=await r.json();setBusy(false);setMsg(r.ok?(accept?'Alliance accepted.':'Alliance declined.'):d.error??'Failed');router.refresh()}return <div className="prod-request"><div><strong>{requesterName}</strong><span>wants to form an Alliance.</span></div><button disabled={busy} onClick={()=>respond(true)}>ACCEPT</button><button disabled={busy} onClick={()=>respond(false)}>DECLINE</button>{msg&&<small>{msg}</small>}</div>}
