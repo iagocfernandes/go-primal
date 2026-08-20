@@ -7,8 +7,8 @@
 - [x] Immutable resource ledger
 - [x] Alpha Kingdom seed data
 - [x] Private activity-proof bucket
-- [ ] Add SUPABASE_SERVICE_ROLE_KEY locally and in hosting secrets
-- [ ] Configure final Auth redirect/site URLs after deployment
+- [x] Add SUPABASE_SERVICE_ROLE_KEY locally and in hosting secrets
+- [x] Configure final Auth redirect/site URLs after deployment
 
 ## P0.5 Proof Engine — BACKEND MODEL DONE
 - [x] Canonical activities table
@@ -20,17 +20,17 @@
 - [x] Manual proof storage path
 - [ ] End-to-end integration test with a real account
 
-## P1 Strava — CODE READY, CREDENTIALS NEEDED
+## P1 Strava — LIVE (webhook subscription 367106)
 - [x] OAuth route scaffold
 - [x] Callback scaffold
 - [x] Webhook endpoint scaffold
 - [x] Raw event queue model
 - [x] Normalization/dedupe/verification code scaffold
-- [ ] Create/register Strava developer app
-- [ ] Add Client ID / Secret
-- [ ] Set callback URL
-- [ ] Register webhook subscription using deployed HTTPS URL
-- [ ] Connect Iago's Strava and import first real activity
+- [x] Create/register Strava developer app
+- [x] Add Client ID / Secret
+- [x] Set callback URL
+- [x] Register webhook subscription using deployed HTTPS URL
+- [x] Connect Iago's Strava and import first real activity
 - [ ] Validate duplicate handling
 
 ## P2 Core Game
@@ -52,8 +52,8 @@
 - [ ] Warband after solo PvP is stable
 
 ## P4 Closed Alpha
-- [ ] Deploy staging
-- [ ] Deploy production alpha
+- [x] Deploy staging
+- [x] Deploy production alpha
 - [ ] Invite 5 users
 - [ ] Increase to max 10 after stability
 - [ ] Instrument incremental-behavior question
