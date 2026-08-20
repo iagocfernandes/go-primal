@@ -43,3 +43,6 @@ uploads/
 
 # Archive snapshots — use Git history/releases instead
 *.zip
+
+# TypeScript incremental build info
+*.tsbuildinfo
