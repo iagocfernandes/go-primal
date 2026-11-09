@@ -15,6 +15,7 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState("Validating recovery link...");
   const [busy, setBusy] = useState(false);
   const [updated, setUpdated] = useState(false);
+  const [accountEmail, setAccountEmail] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -29,6 +30,7 @@ export default function ResetPasswordPage() {
       if (active) {
         setReady(result.ready);
         setMessage(result.message);
+        setAccountEmail(result.ready ? result.email ?? "" : "");
       }
     }).catch(() => {
       if (active) setMessage("Recovery link could not be validated. Request a new link and try again.");
@@ -72,6 +74,7 @@ export default function ResetPasswordPage() {
       <div style={{ fontSize: 42, fontWeight: 900, lineHeight: 0.82, marginBottom: 44 }}>GO<br />PRIMAL</div>
       <p style={{ fontWeight: 800, fontSize: 24 }}>Choose a new password.</p>
       <p style={{ color: "#666", lineHeight: 1.45 }}>{message}</p>
+      {accountEmail && <p style={{ lineHeight: 1.45 }}>Account: <strong>{accountEmail}</strong></p>}
 
       {updated ? (
         <a href="/login" style={{ display: "inline-block", marginTop: 24, color: "#111" }}>SIGN IN ON THE WEB</a>

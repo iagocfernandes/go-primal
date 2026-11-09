@@ -1,4 +1,5 @@
 import "./globals.css";
+import RecoveryRedirect from "@/components/RecoveryRedirect";
 
 export const metadata = {
   title: "GO PRIMAL — Web Alpha V0.5",
@@ -6,5 +7,5 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body>{children}</body></html>;
+  return <html lang="en"><body><RecoveryRedirect />{children}</body></html>;
 }

@@ -9,7 +9,7 @@ function fakeAuth(failingMethod) {
   const calls = [];
   const auth = Object.fromEntries(["verifyOtp", "exchangeCodeForSession", "setSession", "getUser"].map((method) => [method, async (argument) => {
     calls.push([method, argument]);
-    return { error: method === failingMethod ? { message: "expired" } : null, data: { user: { id: "test-user" } } };
+    return { error: method === failingMethod ? { message: "expired" } : null, data: { user: { id: "test-user", email: "verified-account@example.test" } } };
   }]));
   return { auth, calls };
 }
@@ -28,6 +28,25 @@ test("PKCE, token hash and expired callbacks reach reset; normal login/signup st
     assert.equal(recoveryRedirect(url(`/login${query}`)), null);
   }
   assert.equal(new URL(recoveryRedirect(url("/login?code=test&next=https://example.org"))).pathname, "/reset-password");
+});
+
+test("global handler catches authenticated home callbacks without looping on the reset page", () => {
+  const callback = "#type=recovery&error=access_denied&error_code=otp_expired";
+  assert.equal(recoveryRedirect(url(`/${callback}`)), `${origin}/reset-password${callback}`);
+  assert.equal(recoveryRedirect(url(`/kingdom${callback}`)), `${origin}/reset-password${callback}`);
+  assert.equal(recoveryRedirect(url(`/reset-password${callback}`)), null);
+  assert.equal(recoveryRedirect(url("/reset-password?code=synthetic-code")), null);
+});
+
+test("reset identifies the account from Auth's verified user, never callback input", async () => {
+  const { auth } = fakeAuth();
+  const result = await initializePasswordRecovery(auth, url("/reset-password?code=synthetic-code&email=untrusted@example.test"));
+  assert.equal(result.ready, true);
+  assert.equal(result.email, "verified-account@example.test");
+  const failed = fakeAuth("exchangeCodeForSession");
+  const invalid = await initializePasswordRecovery(failed.auth, url("/reset-password?code=expired&email=untrusted@example.test"));
+  assert.equal(invalid.ready, false);
+  assert.equal(invalid.email, undefined);
 });
 
 test("implicit recovery establishes cookie-backed session and validates user before enabling form", async () => {

@@ -5,6 +5,7 @@ type RecoveryAuth = Pick<SupabaseClient["auth"], "exchangeCodeForSession" | "ver
 const invalidLink = "This recovery link is missing or expired. Go back to Sign in → Forgot password? and request a new one.";
 
 export function recoveryRedirect(url: URL): string | null {
+  if (url.pathname === "/reset-password") return null;
   const fragment = new URLSearchParams(url.hash.slice(1));
   const recovery = url.searchParams.get("type") === "recovery" || fragment.get("type") === "recovery";
   // Existing signup emails use confirmed=1. Bare PKCE callbacks here are recovery links.
@@ -18,7 +19,7 @@ export function recoveryRedirect(url: URL): string | null {
   return target.href;
 }
 
-export async function initializePasswordRecovery(auth: RecoveryAuth, url: URL) {
+export async function initializePasswordRecovery(auth: RecoveryAuth, url: URL): Promise<{ ready: boolean; message: string; email?: string }> {
   const fragment = new URLSearchParams(url.hash.slice(1));
   if (url.searchParams.has("error") || fragment.has("error")) {
     return { ready: false, message: invalidLink };
@@ -49,5 +50,5 @@ export async function initializePasswordRecovery(auth: RecoveryAuth, url: URL) {
   // Verify the recovered (or existing cookie) session with Auth before enabling updates.
   const { data, error } = await auth.getUser();
   if (error || !data.user) return { ready: false, message: invalidLink };
-  return { ready: true, message: "Recovery link verified. Choose your new password." };
+  return { ready: true, message: "Recovery link verified. Choose your new password.", email: data.user.email };
 }
