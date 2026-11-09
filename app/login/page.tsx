@@ -1,8 +1,9 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { recoveryRedirect } from "@/lib/supabase/recovery";
 
 type Mode = "signin" | "signup" | "forgot";
 
@@ -21,6 +22,21 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    // The shared Auth Site URL also receives native-app recovery links.
+    // Preserve their callback before the default browser client can consume it.
+    const target = recoveryRedirect(new URL(window.location.href));
+    if (target) {
+      window.location.replace(target);
+      return;
+    }
+    const supabase = createSupabaseBrowserClient();
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") window.location.replace("/reset-password");
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   async function login(e: FormEvent) {
     e.preventDefault();

@@ -20,6 +20,8 @@ jobs:
 
       - run: npm run typecheck
 
+      - run: npm run test:recovery
+
       # The build prerenders /login and /reset-password, which construct a
       # Supabase client. Placeholder values are enough to satisfy that — CI
       # must never hold real project credentials.
